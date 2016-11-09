@@ -6,6 +6,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       'src/*.js',
+      'test/util/*.js',
       'test/**/*Spec.js'
     ],
     reporters: ['progress'],

@@ -1,13 +1,14 @@
 (function () {
   var instance = null;
+  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   
   function ScrollSpy () {
-    
     if(instance) {
       return instance;
     } else {
       instance = {
-        add: this.addElement,
+        add: bind(this.addElement, this),
+        clean: bind(this.cleanItems, this),
         getItems: this.getItems,
         debug: this.debug
       };
@@ -19,16 +20,31 @@
     return instance;
   }
   
+  ScrollSpy.prototype.throttle = function(callback) {
+    var idle = true;
+    return function() {
+      if (idle) {
+        callback();
+        idle = false;
+        setTimeout(function() {
+          return idle = true;
+        }, 150);
+      }
+    };
+  };
+  
+  ScrollSpy.prototype.cleanItems = function() {
+    this.items = [];
+  };
+  
   ScrollSpy.prototype.startListener = function() {
-    // TODO: throttle
-    hui.on(window, "throttledScroll", this.onScroll);
-    hui.on(window, "throttledResize", this.onResize);
+    window.addEventListener("scroll", this.onScroll());
+    window.addEventListener("resize", this.onResize());
   };
   
   ScrollSpy.prototype.stopListeners = function() {
-    // TODO: stop listening
-    hui.off(window, "throttledScroll", this.onScroll);
-    hui.off(window, "throttledResize", this.onResize);
+    window.removeEventListener("scroll", this.onScroll());
+    window.removeEventListener("resize", this.onResize());
   };
   
   ScrollSpy.prototype.resetElementPosition = function() {
@@ -59,14 +75,18 @@
   };
   
   ScrollSpy.prototype.onResize = function() {
-    if (this.winHeight !== window.innerHeight) {
-      return this.resetElementPosition();
-    }
+    this.throttle(function () {
+      if (this.winHeight !== window.innerHeight) {
+        this.resetElementPosition();
+      }
+    });
   };
   
   ScrollSpy.prototype.onScroll = function() {
-    this.checkDocumentHeight();
-    this.checkVisibleItems();
+    this.throttle(function () {
+      this.checkDocumentHeight();
+      this.checkVisibleItems();
+    });
   };
   
   ScrollSpy.prototype.getItems = function() {
@@ -152,4 +172,6 @@
       }).appendTo("body");
     }
   };
+  
+  window.ScrollSpy = new ScrollSpy();
 })();

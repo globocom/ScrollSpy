@@ -6,7 +6,7 @@ describe("ScrollSpy", function () {
   });
   
   afterEach(function () {
-    ScrollSpy.setItems([]);
+    ScrollSpy.clean();
     $(".fixture").remove();
   });
   
