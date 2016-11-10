@@ -4,16 +4,15 @@ Scrollspy can be used to bind a callback that will be called when user scrolls t
 
 ##Parameters:
 ```javascript
-{
+ScrollSpy.add({
   el: DOMElement, // required
   callback: Function, // required - A function to be called when element are scrolled into screen
   offset: 200, // A offset(in px) to be considered upon calculation
   reference: "top", // ["top"|"bottom"] Which side to use as base when calculation element position.
-}
+});
 ```
 
 ##Usage:
-
 ```javascript
   ScrollSpy.add({
     el: document.querySelector('.myDiv'),
@@ -44,4 +43,9 @@ Scrollspy can be used to bind a callback that will be called when user scrolls t
 There is also available a debug function that show element and line borders that scrollspy are currently listening on
 ```javascript
   ScrollSpy.debug()
+```
+
+##Tests:
+```shell
+  npm test
 ```
