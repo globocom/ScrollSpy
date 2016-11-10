@@ -1,4 +1,5 @@
 describe("ScrollSpy", function () {
+  var interval = null;
   beforeEach(function () {
     $(window.FIXTURES.scrollspy).prependTo("body");
     window.scrollTo(0, 0);
@@ -6,15 +7,15 @@ describe("ScrollSpy", function () {
   });
   
   afterEach(function () {
+    clearInterval(interval);
     ScrollSpy.clean();
     $(".fixture").remove();
   });
   
-  it("should call the callback immediately ", function () {
+  it("should call the callback immediately", function () {
     var el = $(".top0")[0];
     var foo = {};
-    foo.top0Callback = function () {
-    };
+    foo.top0Callback = function () {};
     spyOn(foo, "top0Callback");
     ScrollSpy.add({
       el: el,
@@ -22,7 +23,7 @@ describe("ScrollSpy", function () {
     });
     expect(foo.top0Callback).toHaveBeenCalled();
   });
-  
+
   it("should call the callback of multiples elements in the order they appeared", function () {
     var spy = jasmine.createSpy('spy');
     var fooTop0 = {
@@ -39,68 +40,72 @@ describe("ScrollSpy", function () {
       el: $(".top200")[0],
       callback: fooTop200.top200Callback
     });
-    
+
     expect(spy.calls.first().object.el.className).toBe("top0");
     expect(spy.calls.mostRecent().object.el.className).toBe("top200");
   });
-  
+
   it("should not call the callback if element isnt on screen", function () {
     var el = $(".top1150")[0];
     var foo = {};
-    foo.top1150Callback = function () {
-    };
+    foo.top1150Callback = function () {};
     spyOn(foo, "top1150Callback");
     ScrollSpy.add({
       el: el,
       callback: foo.top1150Callback
     });
     window.scrollTo(0, 500);
-    $(window).trigger("throttledScroll");
+    $(window).trigger("scroll");
     expect(foo.top1150Callback).not.toHaveBeenCalled();
   });
-  
-  it("should call the callback if the the element offset was reached", function () {
+
+  it("should call the callback if the the element offset was reached", function (done) {
     var el = $(".top1150")[0];
     var foo = {};
     foo.top1150Callback = function () {
+      done();
     };
-    spyOn(foo, "top1150Callback");
+    spyOn(foo, "top1150Callback").and.callThrough();
     ScrollSpy.add({
       el: el,
       offset: 400,
       callback: foo.top1150Callback
     });
     expect(foo.top1150Callback).not.toHaveBeenCalled();
-    window.scrollTo(0, 500);
-    $(window).trigger("throttledScroll");
-    expect(foo.top1150Callback).toHaveBeenCalled();
+    interval = setInterval(function () {
+      window.scrollTo(0, 500);
+      $(window).trigger("scroll");
+    }, 200);
   });
-  
-  it("should call the callback on scroll", function () {
+
+  it("should call the callback on scroll", function (done) {
     var el = $(".top1150")[0];
     var foo = {};
     foo.top1150Callback = function () {
+      done();
     };
-    spyOn(foo, "top1150Callback");
+    spyOn(foo, "top1150Callback").and.callThrough();
     ScrollSpy.add({
       el: el,
       callback: foo.top1150Callback
     });
+    console.log("wow", ScrollSpy.getItems());
     expect(foo.top1150Callback).not.toHaveBeenCalled();
-    window.scrollTo(0, 900);
-    $(window).trigger("throttledScroll");
-    expect(foo.top1150Callback).toHaveBeenCalled();
+    interval = setInterval(function () {
+      window.scrollBy(0, 400);
+      $(window).trigger("scroll");
+    }, 200);
   });
-  
-  it("should not call the callback if reference is bottom", function () {
+
+  it("should not call the callback if reference is bottom", function (done) {
     var el = $(".top1150")[0];
     var foo = {};
     foo.top1150Callback = function () {
+      done();
     };
-    foo.top1150BottomCallback = function () {
-    };
-    spyOn(foo, "top1150Callback");
-    spyOn(foo, "top1150BottomCallback");
+    foo.top1150BottomCallback = function () {};
+    spyOn(foo, "top1150Callback").and.callThrough();
+    spyOn(foo, "top1150BottomCallback").and.callThrough();
     ScrollSpy.add({
       el: el,
       callback: foo.top1150Callback
@@ -111,20 +116,21 @@ describe("ScrollSpy", function () {
       callback: foo.top1150BottomCallback
     });
     window.scrollTo(0, 900);
-    $(window).trigger("throttledScroll");
+    $(window).trigger("scroll");
     expect(foo.top1150Callback).toHaveBeenCalled();
     expect(foo.top1150BottomCallback).not.toHaveBeenCalled();
   });
-  
-  it("should call the callback if reference is bottom and its visible", function () {
+
+  it("should call the callback if reference is bottom and its visible", function (done) {
     var el = $(".top1150")[0];
     var foo = {};
     foo.top1150Callback = function () {
     };
     foo.top1150BottomCallback = function () {
+      done();
     };
-    spyOn(foo, "top1150Callback");
-    spyOn(foo, "top1150BottomCallback");
+    spyOn(foo, "top1150Callback").and.callThrough();
+    spyOn(foo, "top1150BottomCallback").and.callThrough();
     ScrollSpy.add({
       el: el,
       callback: foo.top1150Callback
@@ -135,20 +141,21 @@ describe("ScrollSpy", function () {
       callback: foo.top1150BottomCallback
     });
     window.scrollTo(0, 2100);
-    $(window).trigger("throttledScroll");
+    $(window).trigger("scroll");
     expect(foo.top1150Callback).toHaveBeenCalled();
     expect(foo.top1150BottomCallback).toHaveBeenCalled();
   });
-  
-  it("should not call the callback if the the position changes", function () {
+
+  it("should not call the callback if the the position changes", function (done) {
     var el = $(".top1150")[0];
     var foo = {};
     foo.top1150Callback = function () {
+      done();
     };
     foo.top1150BottomCallback = function () {
     };
-    spyOn(foo, "top1150Callback");
-    spyOn(foo, "top1150BottomCallback");
+    spyOn(foo, "top1150Callback").and.callThrough();
+    spyOn(foo, "top1150BottomCallback").and.callThrough();
     ScrollSpy.add({
       el: el,
       callback: foo.top1150Callback
@@ -160,7 +167,7 @@ describe("ScrollSpy", function () {
     });
     $(".top550").clone().add($(".top550").clone()).insertAfter($(".top550"));
     window.scrollTo(0, 2500);
-    $(window).trigger("throttledScroll");
+    $(window).trigger("scroll");
     expect(foo.top1150Callback).toHaveBeenCalled();
     expect(foo.top1150BottomCallback).not.toHaveBeenCalled();
   });

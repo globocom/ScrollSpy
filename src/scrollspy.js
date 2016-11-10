@@ -9,10 +9,12 @@
       instance = {
         add: bind(this.addElement, this),
         clean: bind(this.cleanItems, this),
-        getItems: this.getItems,
-        debug: this.debug
+        getItems: bind(this.getItems, this),
+        debug: bind(this.debug, this)
       };
     }
+    this.onScroll = bind(this.onScroll, this);
+    this.onResize = bind(this.onResize, this);
     this.itemsLen = 0;
     this.items = [];
     this.setDefaultVariables();
@@ -38,13 +40,13 @@
   };
   
   ScrollSpy.prototype.startListener = function() {
-    window.addEventListener("scroll", this.onScroll());
-    window.addEventListener("resize", this.onResize());
+    window.addEventListener("scroll", this.throttle(this.onScroll));
+    window.addEventListener("resize", this.throttle(this.onResize));
   };
   
   ScrollSpy.prototype.stopListeners = function() {
-    window.removeEventListener("scroll", this.onScroll());
-    window.removeEventListener("resize", this.onResize());
+    window.removeEventListener("scroll", this.throttle(this.onScroll));
+    window.removeEventListener("resize", this.throttle(this.onResize));
   };
   
   ScrollSpy.prototype.resetElementPosition = function() {
@@ -83,10 +85,8 @@
   };
   
   ScrollSpy.prototype.onScroll = function() {
-    this.throttle(function () {
-      this.checkDocumentHeight();
-      this.checkVisibleItems();
-    });
+    this.checkDocumentHeight();
+    this.checkVisibleItems();
   };
   
   ScrollSpy.prototype.getItems = function() {
