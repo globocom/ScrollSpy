@@ -157,19 +157,23 @@
   };
   
   ScrollSpy.prototype.debug = function() {
-    var border, color, item;
-    // TODO: remove jquery use from debug function
+    var nodeHtml, css, border, color, item;
+
     for (var i = 0, len = this.items.length; i < len; i++) {
       item = this.items[i];
       color = i % 2 ? "red" : "blue";
       border = "2px dashed " + color;
       item.el.style["border"] = border;
-      $("<div class='debug-line'>").css({
-        top: item.pos,
-        width: "100%",
-        position: "absolute",
-        borderTop: border
-      }).appendTo("body");
+
+      css = "top: " + item.pos + ";";
+      css += "width: 100%;";
+      css += "position: absolute;";
+      css += "border-top: " + border + ";";
+
+      nodeHtml = document.createElement("div");
+      nodeHtml.className = "debug-line";
+      nodeHtml.setAttribute("style", css);
+      document.body.appendChild(nodeHtml);
     }
   };
   
