@@ -6,10 +6,14 @@
 
 (function() {
   var instance = null;
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  
-  function ScrollSpy () {
-    if(instance) {
+  var bind = function(fn, me) {
+    return function() {
+      return fn.apply(me, arguments);
+    };
+  };
+
+  function ScrollSpy() {
+    if (instance) {
       return instance;
     } else {
       instance = {
@@ -24,10 +28,10 @@
     this.itemsLen = 0;
     this.items = [];
     this.setDefaultVariables();
-    
+
     return instance;
   }
-  
+
   ScrollSpy.prototype.throttle = function(callback) {
     var idle = true;
     return function() {
@@ -35,26 +39,26 @@
         callback();
         idle = false;
         setTimeout(function() {
-          return idle = true;
+          return (idle = true);
         }, 150);
       }
     };
   };
-  
+
   ScrollSpy.prototype.cleanItems = function() {
     this.items = [];
   };
-  
+
   ScrollSpy.prototype.startListener = function() {
     window.addEventListener("scroll", this.throttle(this.onScroll));
     window.addEventListener("resize", this.throttle(this.onResize));
   };
-  
+
   ScrollSpy.prototype.stopListeners = function() {
     window.removeEventListener("scroll", this.throttle(this.onScroll));
     window.removeEventListener("resize", this.throttle(this.onResize));
   };
-  
+
   ScrollSpy.prototype.resetElementPosition = function() {
     var item;
     this.winHeight = window.innerHeight;
@@ -64,16 +68,16 @@
     }
     this.checkVisibleItems();
   };
-  
+
   ScrollSpy.prototype.getElementPos = function(param) {
     var top = this.getScrollY();
     var boundClient = param.el.getBoundingClientRect();
     return boundClient[param.reference] + top - param.offset;
   };
-  
+
   ScrollSpy.prototype.getScrollY = function() {
     var doc;
-    if (typeof pageYOffset !== 'undefined') {
+    if (typeof pageYOffset !== "undefined") {
       return pageYOffset;
     } else {
       doc = document.documentElement;
@@ -81,30 +85,30 @@
       return doc.scrollTop;
     }
   };
-  
+
   ScrollSpy.prototype.onResize = function() {
-    this.throttle(function () {
+    this.throttle(function() {
       if (this.winHeight !== window.innerHeight) {
         this.resetElementPosition();
       }
     });
   };
-  
+
   ScrollSpy.prototype.onScroll = function() {
     this.checkDocumentHeight();
     this.checkVisibleItems();
   };
-  
+
   ScrollSpy.prototype.getItems = function() {
     return this.items;
   };
-  
+
   ScrollSpy.prototype.setDefaultVariables = function() {
     this.winHeight = window.innerHeight;
     this.lastPos = this.getScrollY();
     this.docHeight = document.body ? document.body.offsetHeight : 0;
   };
-  
+
   ScrollSpy.prototype.addElement = function(param) {
     var count, item, prevItensLength;
     if (!param.el) {
@@ -115,7 +119,7 @@
     param.pos = this.getElementPos(param);
     prevItensLength = this.items.length;
     count = 0;
-    
+
     for (var i = 0, len = this.items.length; i < len; i++) {
       item = this.items[i];
       if (item.pos > param.pos) {
@@ -131,7 +135,7 @@
     }
     this.checkVisibleItems();
   };
-  
+
   ScrollSpy.prototype.checkDocumentHeight = function() {
     var currentDocHeight = document.body.offsetHeight;
     if (this.docHeight !== currentDocHeight) {
@@ -139,7 +143,7 @@
       this.resetElementPosition();
     }
   };
-  
+
   ScrollSpy.prototype.checkVisibleItems = function() {
     var item;
     var currentPos = this.getScrollY();
@@ -161,7 +165,7 @@
       this.stopListeners();
     }
   };
-  
+
   ScrollSpy.prototype.debug = function() {
     var nodeHtml, css, border, color, item;
 
@@ -182,6 +186,6 @@
       document.body.appendChild(nodeHtml);
     }
   };
-  
+
   window.ScrollSpy = new ScrollSpy();
 })();
