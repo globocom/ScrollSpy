@@ -1,8 +1,9 @@
-#Scrollspy
+# Scrollspy
 
 Scrollspy can be used to bind a callback that will be called when user scrolls to the given element.
 
-##Parameters:
+## Parameters:
+
 ```javascript
 ScrollSpy.add({
   el: DOMElement, // required
@@ -12,7 +13,8 @@ ScrollSpy.add({
 });
 ```
 
-##Usage:
+## Usage:
+
 ```javascript
   ScrollSpy.add({
     el: document.querySelector('.myDiv'),
@@ -39,13 +41,20 @@ ScrollSpy.add({
   });
 ```
 
-##Debug:
+## Debug:
+
 There is also available a debug function that show element and line borders that scrollspy are currently listening on
+
 ```javascript
   ScrollSpy.debug()
 ```
 
-##Tests:
+## Tests:
+
 ```shell
   npm test
 ```
+
+## License
+
+Scrollspy is licensed under the [MIT license](LICENSE).
