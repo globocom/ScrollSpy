@@ -49,3 +49,6 @@ There is also available a debug function that show element and line borders that
 ```shell
   npm test
 ```
+
+##License
+Scrollspy is licensed under the [MIT license](LICENSE).

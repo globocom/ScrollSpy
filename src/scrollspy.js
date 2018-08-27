@@ -1,4 +1,10 @@
-(function () {
+/*
+ * Copyright (c) 2016, Globo.com (https://github.com/globocom)
+ *
+ * License: MIT
+ */
+
+(function() {
   var instance = null;
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   
