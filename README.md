@@ -2,6 +2,20 @@
 
 Scrollspy can be used to bind a callback that will be called when user scrolls to the given element.
 
+## Installation:
+
+Install via npm
+
+```shell
+$ npm install @rafalages/scrollspy
+```
+
+Or include one of the [browser bundles](dist/umd) via a script tag
+
+```html
+<script src="https://unpkg.com/@rafalages/scrollspy@0.1.0/dist/umd/scrollspy.min.js"></script>
+```
+
 ## Parameters:
 
 ```javascript
@@ -16,6 +30,8 @@ ScrollSpy.add({
 ## Usage:
 
 ```javascript
+  import ScrollSpy from '@rafalages/scrollspy'
+
   ScrollSpy.add({
     el: document.querySelector('.myDiv'),
     callback: function(){
@@ -49,11 +65,9 @@ There is also available a debug function that show element and line borders that
   ScrollSpy.debug()
 ```
 
-## Tests:
+## Contributing:
 
-```shell
-  npm test
-```
+This project utilizes [npm run scripts](https://docs.npmjs.com/misc/scripts). See [package.json](package.json) for available scripts.
 
 ## License
 
