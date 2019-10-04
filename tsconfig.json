@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "allowJs": true,
     "module": "esnext",
-    "target": "es5",
+    "target": "es3",
     "rootDir": "src",
     "outDir": "dist/esm",
-    "declaration": false,
-    "declarationMap": false,
+    "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
-    "inlineSources": true,
-    "importHelpers": false,
     "strict": true,
     "esModuleInterop": true
   },

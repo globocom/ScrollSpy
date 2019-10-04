@@ -4,186 +4,162 @@
  * License: MIT
  */
 
-var instance = null;
-var bind = function(fn, me) {
-  return function() {
-    return fn.apply(me, arguments);
-  };
-};
-
-function ScrollSpy() {
-  if (instance) {
-    return instance;
-  } else {
-    instance = {
-      add: bind(this.addElement, this),
-      clean: bind(this.cleanItems, this),
-      getItems: bind(this.getItems, this),
-      debug: bind(this.debug, this)
-    };
-  }
-  this.onScroll = bind(this.onScroll, this);
-  this.onResize = bind(this.onResize, this);
-  this.itemsLen = 0;
-  this.items = [];
-  this.setDefaultVariables();
-
-  return instance;
+export interface ScrollSpyItemOptions {
+  el: HTMLElement;
+  callback: () => void;
+  offset?: number;
+  reference?: ScrollSpyItemReference;
 }
 
-ScrollSpy.prototype.throttle = function(callback) {
-  var idle = true;
-  return function() {
+export type ScrollSpyItemReference = "top" | "bottom";
+
+export type ScrollSpyCallback = () => void;
+
+export interface ScrollSpyItem extends ScrollSpyItemOptions {
+  offset: number;
+  reference: ScrollSpyItemReference;
+  pos: number;
+}
+
+let items: ScrollSpyItem[] = [];
+let winHeight: number;
+let docHeight: number;
+
+export function clean(): void {
+  items = [];
+}
+
+export function getItems(): readonly (Readonly<ScrollSpyItem>)[] {
+  return items.map(i => i);
+}
+
+export function add(param: ScrollSpyItemOptions): void {
+  if (!param.el) {
+    throw new Error("[@rafalages/scrollspy] item.el is required");
+  }
+  const item: ScrollSpyItem = Object.assign(
+    { offset: 200, reference: "top", pos: 0 },
+    param
+  );
+  item.pos = getElementPos(item);
+
+  const index = items.findIndex(i => i.pos > item.pos);
+
+  items.splice(index === -1 ? items.length : index, 0, item);
+
+  if (items.length === 1) {
+    setDefaultVariables();
+    startListener();
+  }
+  checkVisibleItems();
+}
+
+export function debug(): ScrollSpyItem[] {
+  items.forEach((item, i) => {
+    const color = i % 2 ? "red" : "blue";
+    const border = `2px dashed ${color}`;
+    const nodeHtml = document.createElement("div");
+    const css = [
+      `top: ${item.pos};`,
+      "width: 100%;",
+      "position: absolute;",
+      `border-top: ${border};`
+    ].join("");
+
+    item.el.style.border = border;
+
+    nodeHtml.className = "debug-line";
+    nodeHtml.setAttribute("style", css);
+    document.body.appendChild(nodeHtml);
+  });
+  return items;
+}
+
+function throttle(callback: ScrollSpyCallback): () => void {
+  let idle = true;
+  return () => {
     if (idle) {
       callback();
       idle = false;
-      setTimeout(function() {
-        return (idle = true);
-      }, 150);
+      setTimeout(() => (idle = true), 150);
     }
   };
-};
+}
 
-ScrollSpy.prototype.cleanItems = function() {
-  this.items = [];
-};
+function getElementPos(item: ScrollSpyItem): number {
+  const top = getScrollY();
+  const boundClient = item.el.getBoundingClientRect();
+  return boundClient[item.reference] + top - item.offset;
+}
 
-ScrollSpy.prototype.startListener = function() {
-  window.addEventListener("scroll", this.throttle(this.onScroll));
-  window.addEventListener("resize", this.throttle(this.onResize));
-};
-
-ScrollSpy.prototype.stopListeners = function() {
-  window.removeEventListener("scroll", this.throttle(this.onScroll));
-  window.removeEventListener("resize", this.throttle(this.onResize));
-};
-
-ScrollSpy.prototype.resetElementPosition = function() {
-  var item;
-  this.winHeight = window.innerHeight;
-  for (var i = 0, len = this.items.length; i < len; i++) {
-    item = this.items[i];
-    item.pos = this.getElementPos(item);
-  }
-  this.checkVisibleItems();
-};
-
-ScrollSpy.prototype.getElementPos = function(param) {
-  var top = this.getScrollY();
-  var boundClient = param.el.getBoundingClientRect();
-  return boundClient[param.reference] + top - param.offset;
-};
-
-ScrollSpy.prototype.getScrollY = function() {
-  var doc;
+function getScrollY(): number {
   if (typeof pageYOffset !== "undefined") {
     return pageYOffset;
   } else {
-    doc = document.documentElement;
+    let doc = document.documentElement;
     doc = doc.clientHeight ? doc : document.body;
     return doc.scrollTop;
   }
-};
+}
 
-ScrollSpy.prototype.onResize = function() {
-  this.throttle(function() {
-    if (this.winHeight !== window.innerHeight) {
-      this.resetElementPosition();
+function onResize(): void {
+  throttle(() => {
+    if (winHeight !== window.innerHeight) {
+      resetElementPosition();
     }
   });
-};
+}
 
-ScrollSpy.prototype.onScroll = function() {
-  this.checkDocumentHeight();
-  this.checkVisibleItems();
-};
+function onScroll(): void {
+  checkDocumentHeight();
+  checkVisibleItems();
+}
 
-ScrollSpy.prototype.getItems = function() {
-  return this.items;
-};
+function startListener(): void {
+  window.addEventListener("scroll", throttle(onScroll));
+  window.addEventListener("resize", throttle(onResize));
+}
 
-ScrollSpy.prototype.setDefaultVariables = function() {
-  this.winHeight = window.innerHeight;
-  this.lastPos = this.getScrollY();
-  this.docHeight = document.body ? document.body.offsetHeight : 0;
-};
+function stopListeners(): void {
+  window.removeEventListener("scroll", throttle(onScroll));
+  window.removeEventListener("resize", throttle(onResize));
+}
 
-ScrollSpy.prototype.addElement = function(param) {
-  var count, item, prevItensLength;
-  if (!param.el) {
-    return;
+function resetElementPosition(): void {
+  winHeight = window.innerHeight;
+  for (const item of items) {
+    item.pos = getElementPos(item);
   }
-  param.offset = typeof param.offset === "undefined" ? 200 : param.offset;
-  param.reference = param.reference || "top";
-  param.pos = this.getElementPos(param);
-  prevItensLength = this.items.length;
-  count = 0;
+  checkVisibleItems();
+}
 
-  for (var i = 0, len = this.items.length; i < len; i++) {
-    item = this.items[i];
-    if (item.pos > param.pos) {
-      break;
-    }
-    count++;
-  }
-  this.items.splice(count, 0, param);
-  this.itemsLen = this.items.length;
-  if (prevItensLength === 0) {
-    this.setDefaultVariables();
-    this.startListener();
-  }
-  this.checkVisibleItems();
-};
+function setDefaultVariables(): void {
+  winHeight = window.innerHeight;
+  docHeight = document.body ? document.body.offsetHeight : 0;
+}
 
-ScrollSpy.prototype.checkDocumentHeight = function() {
-  var currentDocHeight = document.body.offsetHeight;
-  if (this.docHeight !== currentDocHeight) {
-    this.docHeight = currentDocHeight;
-    this.resetElementPosition();
+function checkDocumentHeight(): void {
+  const currentDocHeight = document.body.offsetHeight;
+  if (docHeight !== currentDocHeight) {
+    docHeight = currentDocHeight;
+    resetElementPosition();
   }
-};
+}
 
-ScrollSpy.prototype.checkVisibleItems = function() {
-  var item;
-  var currentPos = this.getScrollY();
-  var currentPosOffset = this.winHeight + currentPos;
-  while (this.items.length) {
-    item = this.items[0];
+function checkVisibleItems(): void {
+  const currentPos = getScrollY();
+  const currentPosOffset = winHeight + currentPos;
+  for (const item of items) {
     if (currentPosOffset >= item.pos) {
       if (item.callback) {
         item.callback();
       }
-      this.items.shift();
-      this.itemsLen = this.items.length;
+      items.shift();
     } else {
       break;
     }
   }
-  this.lastPos = currentPos;
-  if (!this.items.length) {
-    this.stopListeners();
+  if (!items.length) {
+    stopListeners();
   }
-};
-
-ScrollSpy.prototype.debug = function() {
-  var nodeHtml, css, border, color, item;
-
-  for (var i = 0, len = this.items.length; i < len; i++) {
-    item = this.items[i];
-    color = i % 2 ? "red" : "blue";
-    border = "2px dashed " + color;
-    item.el.style["border"] = border;
-
-    css = "top: " + item.pos + ";";
-    css += "width: 100%;";
-    css += "position: absolute;";
-    css += "border-top: " + border + ";";
-
-    nodeHtml = document.createElement("div");
-    nodeHtml.className = "debug-line";
-    nodeHtml.setAttribute("style", css);
-    document.body.appendChild(nodeHtml);
-  }
-};
-
-export default new ScrollSpy();
+}

@@ -5,8 +5,10 @@
   "main": "./dist/umd/scrollspy.js",
   "module": "./dist/esm/scrollspy.js",
   "browser": "./dist/umd/scrollspy.js",
+  "types": "./dist/esm/scrollspy.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "npm run build:esm && npm run build:umd && npm run build:minify",
