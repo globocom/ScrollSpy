@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "npm run build:esm && npm run build:umd && npm run build:minify",
-    "build:esm": "tsc",
+    "build:esm": "tsc --preserveWatchOutput",
     "build:umd": "rollup -c rollup.config.js",
     "build:minify": "terser --compress --mangle --output dist/umd/scrollspy.min.js --source-map \"content='./dist/umd/scrollspy.js.map',filename=dist/umd/scrollspy.min.js.map,includeSources\" -- dist/umd/scrollspy.js",
     "demo": "npx http-server ./",
