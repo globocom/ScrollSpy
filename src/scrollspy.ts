@@ -35,7 +35,7 @@ export function getItems(): readonly (Readonly<ScrollSpyItem>)[] {
 
 export function add(param: ScrollSpyItemOptions): void {
   if (!param.el) {
-    throw new Error("[@rafalages/scrollspy] item.el is required");
+    throw new Error("[@globocom/scrollspy] item.el is required");
   }
   const item: ScrollSpyItem = Object.assign(
     { offset: 200, reference: "top", pos: 0 },

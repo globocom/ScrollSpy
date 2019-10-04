@@ -7,13 +7,13 @@ Scrollspy can be used to bind a callback that will be called when user scrolls t
 Install via npm
 
 ```shell
-$ npm install @rafalages/scrollspy
+$ npm install @globocom/scrollspy
 ```
 
 Or include one of the [browser bundles](dist/umd) via a script tag
 
 ```html
-<script src="https://unpkg.com/@rafalages/scrollspy@0.1.0/dist/scrollspy.min.js"></script>
+<script src="https://unpkg.com/@globocom/scrollspy@0.1.0/dist/scrollspy.min.js"></script>
 ```
 
 ## Parameters:
@@ -30,7 +30,7 @@ ScrollSpy.add({
 ## Usage:
 
 ```javascript
-import * as ScrollSpy from "@rafalages/scrollspy";
+import * as ScrollSpy from "@globocom/scrollspy";
 
 ScrollSpy.add({
   el: document.querySelector(".myDiv"),

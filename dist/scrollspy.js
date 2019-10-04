@@ -20,7 +20,7 @@
     }
     function add(param) {
         if (!param.el) {
-            throw new Error("[@rafalages/scrollspy] item.el is required");
+            throw new Error("[@globocom/scrollspy] item.el is required");
         }
         var item = Object.assign({ offset: 200, reference: "top", pos: 0 }, param);
         item.pos = getElementPos(item);
