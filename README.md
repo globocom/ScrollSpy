@@ -30,7 +30,7 @@ ScrollSpy.add({
 ## Usage:
 
 ```javascript
-import ScrollSpy from "@rafalages/scrollspy";
+import * as ScrollSpy from "@rafalages/scrollspy";
 
 ScrollSpy.add({
   el: document.querySelector(".myDiv"),
