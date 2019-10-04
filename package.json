@@ -1,5 +1,6 @@
 {
   "name": "@rafalages/scrollspy",
+  "private": false,
   "version": "0.1.0",
   "description": "Scrollspy can be used to bind a callback that will be called when user scrolls to the given element.",
   "main": "./dist/scrollspy.js",
