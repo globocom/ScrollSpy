@@ -3,7 +3,7 @@ import sourcemaps from "rollup-plugin-sourcemaps";
 export default {
   input: "dist/esm/scrollspy.js",
   output: {
-    file: "dist/umd/scrollspy.js",
+    file: "dist/scrollspy.js",
     format: "umd",
     name: "ScrollSpy",
     sourcemap: true
