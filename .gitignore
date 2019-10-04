@@ -8,5 +8,5 @@
 ehthumbs.db
 Thumbs.db
 
-/dist/esm
+/dist
 /node_modules

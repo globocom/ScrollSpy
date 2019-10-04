@@ -15,7 +15,7 @@
     "build": "npm run build:esm && npm run build:umd && npm run build:minify",
     "build:esm": "tsc --preserveWatchOutput",
     "build:umd": "rollup -c rollup.config.js",
-    "build:minify": "terser --compress --mangle --output dist/scrollspy.min.js --source-map \"content='./dist/scrollspy.js.map',filename=dist/umd/scrollspy.min.js.map,includeSources\" -- dist/scrollspy.js",
+    "build:minify": "terser --compress --mangle --output dist/scrollspy.min.js --source-map \"content='./dist/scrollspy.js.map',filename=dist/scrollspy.min.js.map,includeSources\" -- dist/scrollspy.js",
     "demo": "npx http-server ./",
     "develop": "concurrently \"npm run build:esm -- --watch\" \"npm run build:umd -- --watch\" \"npm test -- --singleRun false --autoWatch true\" \"npm lint -- --watch\"",
     "lint": "esw --color --ext .ts src",

@@ -53,6 +53,7 @@ describe("ScrollSpy", function() {
 
   describe("Callback tests", function() {
     var el, foo;
+
     beforeEach(function() {
       el = $(".top1150")[0];
       foo = {};
