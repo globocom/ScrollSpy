@@ -15,6 +15,7 @@
     "build:minify": "terser --compress --mangle --output dist/umd/scrollspy.min.js --source-map \"content='./dist/umd/scrollspy.js.map',filename=dist/umd/scrollspy.min.js.map,includeSources\" -- dist/umd/scrollspy.js",
     "demo": "npx http-server ./",
     "develop": "concurrently \"npm run build:esm -- --watch\" \"npm run build:umd -- --watch\" \"npm test -- --singleRun false --autoWatch true\"",
+    "lint": "esw --color --ext .ts src",
     "test": "karma start karma.conf.js"
   },
   "repository": {
@@ -27,11 +28,17 @@
   },
   "homepage": "https://github.com/globocom/ScrollSpy#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
     "concurrently": "^4.1.2",
     "jasmine-core": "^2.5.2",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.0.2",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-watch": "^6.0.1",
+    "prettier": "^1.18.2",
     "rollup": "^1.23.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "terser": "^4.3.4",
