@@ -1,43 +1,55 @@
 <html>
-<head>
-  <title>ScollSpy Demo</title>
-  <script type="text/javascript" src="dist/umd/scrollspy.js"></script>
-  <style type="text/css">
-    .item-1, .item-2, .item-3, .item-4, .item-5 {
-      height: 400px;
-      max-width: 300px;
-      margin: 10px auto;
-      background-color: green;
-    }
-  </style>
-</head>
-<body>
-  <div class="item-1"></div>
-  <div class="item-2"></div>
-  <div class="item-3"></div>
-  <div class="item-4"></div>
-  <div class="item-5"></div>
+  <head>
+    <title>ScollSpy Demo</title>
+    <script type="text/javascript" src="dist/scrollspy.js"></script>
+    <style type="text/css">
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-  <script type="text/javascript">
-    ScrollSpy.add({
-      el: document.querySelector(".item-3"),
-      offset: 0,
-      callback: function(){
-        var el = document.querySelector(".item-3");
-        el.style.backgroundColor = "#666";
-      },
-    });
+      .block {
+        height: 400px;
+        max-width: 300px;
+        margin: 10px auto;
+        background-color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="block item-1"></div>
+    <div class="block item-2"></div>
+    <div class="block item-3"></div>
+    <div class="block item-4"></div>
+    <div class="block item-5"></div>
+    <div class="block item-6"></div>
+    <div class="block item-7"></div>
 
-    ScrollSpy.add({
-      el: document.querySelector(".item-5"),
-      offset: 40,
-      callback: function(){
-        var el = document.querySelector(".item-5");
-        el.style.backgroundColor = "#666";
-      },
-    });
+    <script type="text/javascript">
+      function ativateBlock() {
+        this.el.style.backgroundColor = "#ddd";
+      }
 
-    ScrollSpy.debug();
-  </script>
-</body>
+      ScrollSpy.add({
+        el: document.querySelector(".item-3"),
+        offset: 0,
+        callback: ativateBlock
+      });
+
+      ScrollSpy.add({
+        el: document.querySelector(".item-5"),
+        offset: 40,
+        callback: ativateBlock
+      });
+
+      ScrollSpy.add({
+        el: document.querySelector(".item-6"),
+        offset: 40,
+        callback: ativateBlock
+      });
+
+      ScrollSpy.debug();
+    </script>
+  </body>
 </html>
