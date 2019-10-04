@@ -3,168 +3,127 @@
  *
  * License: MIT
  */
-var instance = null;
-var bind = function (fn, me) {
-    return function () {
-        return fn.apply(me, arguments);
-    };
-};
-function ScrollSpy() {
-    if (instance) {
-        return instance;
-    }
-    else {
-        instance = {
-            add: bind(this.addElement, this),
-            clean: bind(this.cleanItems, this),
-            getItems: bind(this.getItems, this),
-            debug: bind(this.debug, this)
-        };
-    }
-    this.onScroll = bind(this.onScroll, this);
-    this.onResize = bind(this.onResize, this);
-    this.itemsLen = 0;
-    this.items = [];
-    this.setDefaultVariables();
-    return instance;
+var items = [];
+var winHeight;
+var docHeight;
+export function clean() {
+    items = [];
 }
-ScrollSpy.prototype.throttle = function (callback) {
+export function getItems() {
+    return items.map(function (i) { return i; });
+}
+export function add(param) {
+    if (!param.el) {
+        throw new Error("[@rafalages/scrollspy] item.el is required");
+    }
+    var item = Object.assign({ offset: 200, reference: "top", pos: 0 }, param);
+    item.pos = getElementPos(item);
+    var index = items.findIndex(function (i) { return i.pos > item.pos; });
+    items.splice(index === -1 ? items.length : index, 0, item);
+    if (items.length === 1) {
+        setDefaultVariables();
+        startListener();
+    }
+    checkVisibleItems();
+}
+export function debug() {
+    items.forEach(function (item, i) {
+        var color = i % 2 ? "red" : "blue";
+        var border = "2px dashed " + color;
+        var nodeHtml = document.createElement("div");
+        var css = [
+            "top: " + item.pos + ";",
+            "width: 100%;",
+            "position: absolute;",
+            "border-top: " + border + ";"
+        ].join("");
+        item.el.style.border = border;
+        nodeHtml.className = "debug-line";
+        nodeHtml.setAttribute("style", css);
+        document.body.appendChild(nodeHtml);
+    });
+    return items;
+}
+function throttle(callback) {
     var idle = true;
     return function () {
         if (idle) {
             callback();
             idle = false;
-            setTimeout(function () {
-                return (idle = true);
-            }, 150);
+            setTimeout(function () { return (idle = true); }, 150);
         }
     };
-};
-ScrollSpy.prototype.cleanItems = function () {
-    this.items = [];
-};
-ScrollSpy.prototype.startListener = function () {
-    window.addEventListener("scroll", this.throttle(this.onScroll));
-    window.addEventListener("resize", this.throttle(this.onResize));
-};
-ScrollSpy.prototype.stopListeners = function () {
-    window.removeEventListener("scroll", this.throttle(this.onScroll));
-    window.removeEventListener("resize", this.throttle(this.onResize));
-};
-ScrollSpy.prototype.resetElementPosition = function () {
-    var item;
-    this.winHeight = window.innerHeight;
-    for (var i = 0, len = this.items.length; i < len; i++) {
-        item = this.items[i];
-        item.pos = this.getElementPos(item);
-    }
-    this.checkVisibleItems();
-};
-ScrollSpy.prototype.getElementPos = function (param) {
-    var top = this.getScrollY();
-    var boundClient = param.el.getBoundingClientRect();
-    return boundClient[param.reference] + top - param.offset;
-};
-ScrollSpy.prototype.getScrollY = function () {
-    var doc;
+}
+function getElementPos(item) {
+    var top = getScrollY();
+    var boundClient = item.el.getBoundingClientRect();
+    return boundClient[item.reference] + top - item.offset;
+}
+function getScrollY() {
     if (typeof pageYOffset !== "undefined") {
         return pageYOffset;
     }
     else {
-        doc = document.documentElement;
+        var doc = document.documentElement;
         doc = doc.clientHeight ? doc : document.body;
         return doc.scrollTop;
     }
-};
-ScrollSpy.prototype.onResize = function () {
-    this.throttle(function () {
-        if (this.winHeight !== window.innerHeight) {
-            this.resetElementPosition();
+}
+function onResize() {
+    throttle(function () {
+        if (winHeight !== window.innerHeight) {
+            resetElementPosition();
         }
     });
-};
-ScrollSpy.prototype.onScroll = function () {
-    this.checkDocumentHeight();
-    this.checkVisibleItems();
-};
-ScrollSpy.prototype.getItems = function () {
-    return this.items;
-};
-ScrollSpy.prototype.setDefaultVariables = function () {
-    this.winHeight = window.innerHeight;
-    this.lastPos = this.getScrollY();
-    this.docHeight = document.body ? document.body.offsetHeight : 0;
-};
-ScrollSpy.prototype.addElement = function (param) {
-    var count, item, prevItensLength;
-    if (!param.el) {
-        return;
+}
+function onScroll() {
+    checkDocumentHeight();
+    checkVisibleItems();
+}
+function startListener() {
+    window.addEventListener("scroll", throttle(onScroll));
+    window.addEventListener("resize", throttle(onResize));
+}
+function stopListeners() {
+    window.removeEventListener("scroll", throttle(onScroll));
+    window.removeEventListener("resize", throttle(onResize));
+}
+function resetElementPosition() {
+    winHeight = window.innerHeight;
+    for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
+        var item = items_1[_i];
+        item.pos = getElementPos(item);
     }
-    param.offset = typeof param.offset === "undefined" ? 200 : param.offset;
-    param.reference = param.reference || "top";
-    param.pos = this.getElementPos(param);
-    prevItensLength = this.items.length;
-    count = 0;
-    for (var i = 0, len = this.items.length; i < len; i++) {
-        item = this.items[i];
-        if (item.pos > param.pos) {
-            break;
-        }
-        count++;
-    }
-    this.items.splice(count, 0, param);
-    this.itemsLen = this.items.length;
-    if (prevItensLength === 0) {
-        this.setDefaultVariables();
-        this.startListener();
-    }
-    this.checkVisibleItems();
-};
-ScrollSpy.prototype.checkDocumentHeight = function () {
+    checkVisibleItems();
+}
+function setDefaultVariables() {
+    winHeight = window.innerHeight;
+    docHeight = document.body ? document.body.offsetHeight : 0;
+}
+function checkDocumentHeight() {
     var currentDocHeight = document.body.offsetHeight;
-    if (this.docHeight !== currentDocHeight) {
-        this.docHeight = currentDocHeight;
-        this.resetElementPosition();
+    if (docHeight !== currentDocHeight) {
+        docHeight = currentDocHeight;
+        resetElementPosition();
     }
-};
-ScrollSpy.prototype.checkVisibleItems = function () {
-    var item;
-    var currentPos = this.getScrollY();
-    var currentPosOffset = this.winHeight + currentPos;
-    while (this.items.length) {
-        item = this.items[0];
+}
+function checkVisibleItems() {
+    var currentPos = getScrollY();
+    var currentPosOffset = winHeight + currentPos;
+    for (var _i = 0, items_2 = items; _i < items_2.length; _i++) {
+        var item = items_2[_i];
         if (currentPosOffset >= item.pos) {
             if (item.callback) {
                 item.callback();
             }
-            this.items.shift();
-            this.itemsLen = this.items.length;
+            items.shift();
         }
         else {
             break;
         }
     }
-    this.lastPos = currentPos;
-    if (!this.items.length) {
-        this.stopListeners();
+    if (!items.length) {
+        stopListeners();
     }
-};
-ScrollSpy.prototype.debug = function () {
-    var nodeHtml, css, border, color, item;
-    for (var i = 0, len = this.items.length; i < len; i++) {
-        item = this.items[i];
-        color = i % 2 ? "red" : "blue";
-        border = "2px dashed " + color;
-        item.el.style["border"] = border;
-        css = "top: " + item.pos + ";";
-        css += "width: 100%;";
-        css += "position: absolute;";
-        css += "border-top: " + border + ";";
-        nodeHtml = document.createElement("div");
-        nodeHtml.className = "debug-line";
-        nodeHtml.setAttribute("style", css);
-        document.body.appendChild(nodeHtml);
-    }
-};
-export default new ScrollSpy();
+}
 //# sourceMappingURL=scrollspy.js.map
