@@ -131,7 +131,7 @@ describe("ScrollSpy", function() {
         reference: "bottom",
         callback: foo.top1150BottomCallback
       });
-      window.scrollTo(0, 2100);
+      window.scrollTo(0, 2200);
       $(window).trigger("scroll");
       setTimeout(function() {
         expect(foo.top1150Callback).toHaveBeenCalled();
