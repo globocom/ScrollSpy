@@ -1,12 +1,13 @@
 # Scrollspy
 
-Scrollspy can be used to bind a callback that will be called when user scrolls to the given element.
+Scrollspy can be used to bind a callback function to be called when the element
+reaches its scroll position.
 
 ## Setup
 
 Install via npm
 
-```bash
+```sh
 npm install @globocom/scrollspy
 ```
 
@@ -21,8 +22,8 @@ Or include one of the [browser bundles](dist/umd) via a script tag:
 ```js
 ScrollSpy.add({
   el: DOMElement, // required
-  callback: Function, // required - A function to be called when element are scrolled into screen
-  offset: 200, // An offset (in px) to be considered upon calculation
+  callback: Function, // required - A function to be called when the element gets scrolled into the screen
+  offset: 200, // An offset (in px) to be considered upon scroll calculation
   reference: "top" // ["top"|"bottom"] Which side to use as base for position calculation
 });
 ```
@@ -59,8 +60,7 @@ ScrollSpy.add({
 
 ## Debug
 
-There is also available a debug function that shows element and line borders
-that scrollspy are currently listening on:
+There is also available a debug function that highlights `"scrollspied"` elements:
 
 ```js
 ScrollSpy.debug();

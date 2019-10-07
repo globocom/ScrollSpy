@@ -2,7 +2,11 @@
   "name": "@globocom/scrollspy",
   "private": false,
   "version": "0.1.0",
-  "description": "Scrollspy can be used to bind a callback that will be called when user scrolls to the given element.",
+  "description": "Bind functions to DOM elements based on their scroll position",
+  "keywords": [
+    "scrollspy",
+    "lazyload"
+  ],
   "main": "./dist/scrollspy.js",
   "browser": "./dist/scrollspy.js",
   "module": "./dist/esm/scrollspy.js",
