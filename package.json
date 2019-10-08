@@ -15,6 +15,16 @@
     "dist",
     "src"
   ],
+  "license": "MIT",
+  "author": "rafalages",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/globocom/ScrollSpy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/globocom/ScrollSpy/issues"
+  },
+  "homepage": "https://github.com/globocom/ScrollSpy#readme",
   "scripts": {
     "build": "npm run build:esm && npm run build:umd && npm run build:minify",
     "build:esm": "tsc --preserveWatchOutput",
@@ -25,15 +35,6 @@
     "lint": "esw --color --ext .ts src",
     "test": "karma start karma.conf.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/globocom/ScrollSpy.git"
-  },
-  "author": "rafalages",
-  "bugs": {
-    "url": "https://github.com/globocom/ScrollSpy/issues"
-  },
-  "homepage": "https://github.com/globocom/ScrollSpy#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
