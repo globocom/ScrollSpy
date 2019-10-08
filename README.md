@@ -11,7 +11,7 @@ Install via npm
 npm install @globocom/scrollspy
 ```
 
-Or include one of the [browser bundles](dist/umd) via a script tag:
+Or include one of the [browser bundles](dist/) via a script tag:
 
 ```html
 <script src="https://unpkg.com/@globocom/scrollspy@0.1.0/dist/scrollspy.min.js"></script>
