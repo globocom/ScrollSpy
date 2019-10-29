@@ -10,10 +10,10 @@
       }
 
       .block {
-        height: 400px;
+        height: 300px;
         max-width: 300px;
         margin: 10px auto;
-        background-color: green;
+        background-color: gray;
       }
     </style>
   </head>
@@ -27,26 +27,28 @@
     <div class="block item-7"></div>
 
     <script type="text/javascript">
-      function ativateBlock() {
-        this.el.style.backgroundColor = "#ddd";
+      function switchBlockColor() {
+        const colors = ["red", "green", "blue"];
+        color = colors[Math.floor(Math.random() * colors.length)];
+        this.el.style.backgroundColor = color;
       }
 
       ScrollSpy.add({
         el: document.querySelector(".item-3"),
         offset: 0,
-        callback: ativateBlock
+        callback: switchBlockColor
       });
 
       ScrollSpy.add({
         el: document.querySelector(".item-5"),
         offset: 40,
-        callback: ativateBlock
+        callback: switchBlockColor
       });
 
       ScrollSpy.add({
         el: document.querySelector(".item-6"),
         offset: 40,
-        callback: ativateBlock
+        callback: switchBlockColor
       });
 
       ScrollSpy.debug();
