@@ -41,15 +41,29 @@
     "concurrently": "^4.1.2",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "eslint-watch": "^6.0.1",
+    "husky": "^3.0.9",
     "jasmine-core": "^3.5.0",
     "karma": "^4.3.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^2.0.1",
+    "lint-staged": "^9.4.2",
     "prettier": "^1.18.2",
     "rollup": "^1.23.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "terser": "^4.3.4",
     "typescript": "^3.6.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
